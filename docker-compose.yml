@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: sentinelflow-postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=soar_user
+      - POSTGRES_PASSWORD=soar_secure_password_123
+      - POSTGRES_DB=soar_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U soar_user -d soar_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: ./backend
+    container_name: sentinelflow-backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - APP_NAME=SentinelFlow SOAR Platform
+      - ENVIRONMENT=production
+      - DATABASE_URL=postgresql://soar_user:soar_secure_password_123@postgres:5432/soar_db
+      - JWT_SECRET=sentinelflow-enterprise-jwt-secret-key-32-chars-minimum
+      - JWT_ALGORITHM=HS256
+      - JWT_EXPIRATION_MINUTES=1440
+      - SIMULATION_MODE=true
+      - REQUIRE_APPROVAL_RISK_THRESHOLD=80
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - backend-data:/app/data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health')"]
+      interval: 15s
+      timeout: 10s
+      retries: 3
+
+  frontend:
+    build: ./frontend
+    container_name: sentinelflow-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:
+  backend-data:
