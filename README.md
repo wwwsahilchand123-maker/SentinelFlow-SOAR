@@ -1,178 +1,83 @@
-# 🛡️ SentinelFlow SOAR
+<div align="center">
 
-### Security Orchestration, Automation & Response Platform
+<img src="assets/README-banner.svg" width="100%" alt="SentinelFlow SOAR" />
 
-SentinelFlow is a full-stack SOAR platform built to demonstrate how a modern Security Operations Center can turn security events into structured, automated response workflows.
+[![FastAPI](https://img.shields.io/badge/FastAPI-Backend-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![React](https://img.shields.io/badge/React-SOC%20Dashboard-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
 
-It brings together **alert ingestion, normalization, correlation, threat-intelligence enrichment, deterministic risk scoring, automation rules, playbook execution, incident/case management, human approval, safe response simulation, MITRE ATT&CK mapping, notifications, and audit logging** in one SOC-style interface.
+### 🚨 Turn Security Events into Automated Response
 
-> **Portfolio note:** External response actions are intentionally simulated by default. Threat-intelligence integrations can use live providers when configured, while the local fallback is explicitly marked as simulated.
+**A full-stack SOAR platform demonstrating alert ingestion, threat intelligence, risk scoring, playbooks, incidents and safe response workflows.**
+
+</div>
 
 ---
 
-## 🚨 The Core SOAR Pipeline
+## 🧠 What is SentinelFlow?
+
+SentinelFlow is a SOC-style Security Orchestration, Automation & Response platform. It connects security events to structured, auditable workflows instead of treating alerts, incidents and automation as separate screens.
+
+## ⚡ Core Pipeline
 
 ```mermaid
 flowchart LR
-    A[Security Event] --> B[Alert Ingestion]
-    B --> C[Normalization]
-    C --> D[Deduplication & Correlation]
-    D --> E[Threat Intelligence]
-    E --> F[Risk Scoring]
-    F --> G[Automation Rules]
-    G --> H[SOAR Playbook]
-    H --> I{Approval Required?}
-    I -->|Yes| J[Human Approval]
-    I -->|No| K[Safe Response]
-    J --> K
-    K --> L[Incident / Case]
-    L --> M[Timeline & Notification]
-    M --> N[Audit Log]
-    N --> O[SOC Dashboard]
+ A[Security Event] --> B[Ingestion]
+ B --> C[Normalization]
+ C --> D[Correlation]
+ D --> E[Threat Intelligence]
+ E --> F[Risk Score]
+ F --> G[Automation Rules]
+ G --> H[SOAR Playbook]
+ H --> I{Approval?}
+ I -->|Yes| J[Human Approval]
+ I -->|No| K[Safe Response]
+ J --> K
+ K --> L[Incident]
+ L --> M[Notification]
+ M --> N[Audit Log]
 ```
-
-The important part is that this is designed as an **end-to-end workflow**, not just a collection of disconnected dashboard pages.
-
----
 
 ## ✨ Key Capabilities
 
-### 🔔 Alert Operations
-- REST and webhook-based security-event ingestion
-- Normalized alert model
-- Severity classification
-- Deduplication
-- Alert search, filtering and triage
-- Analyst assignment
-
-### 🔎 Correlation & Risk
-- Time-window event correlation
-- Indicator/host/IP/user relationships
-- Deterministic 0–100 risk scoring
-- Risk-factor breakdowns
-- Asset criticality and incident-history signals
-
-### 🌐 Threat Intelligence
-- Pluggable provider architecture
-- VirusTotal integration support
-- AbuseIPDB integration support
-- Local simulated intelligence fallback
-- Indicator reputation and confidence
-- Lookup caching
-
-### ⚙️ SOAR Automation
-- Automation rules
-- Ordered playbook steps
-- Playbook execution telemetry
-- Execution status and step-level logs
-- Retry/error handling
-- Playbook versioning
-- Dry-run/test execution concepts
-
-### 🧑‍💻 Human-in-the-Loop Response
-High-risk actions can require analyst approval before execution.
-
-Supported safe response simulations include:
-
-- IP blocking
-- Endpoint isolation
-- User disablement
-- Password reset
-- Email quarantine
-
-These operate in the application's **simulation environment** rather than against real infrastructure.
-
-### 🕵️ Investigation
-- Incident lifecycle management
-- Multi-incident cases
-- Incident timeline
-- Indicators
-- Assets
-- Evidence metadata and SHA-256 integrity tracking
-- MITRE ATT&CK technique mapping
-
-### 📋 Governance
-- JWT authentication
-- ADMIN / SOC_ANALYST / VIEWER roles
-- Backend-enforced RBAC
-- Append-only audit trail
-- Notifications
-- Security analytics and reporting
-
----
+- 🔔 REST and webhook alert ingestion
+- 🧩 Normalization, deduplication and correlation
+- 🎯 Deterministic 0–100 risk scoring
+- 🌐 VirusTotal / AbuseIPDB provider adapters with simulated fallback
+- ⚙️ Automation rules and ordered playbooks
+- 🧑‍💻 Human-in-the-loop approval for high-risk actions
+- 🛡️ Safe response simulations such as IP block and endpoint isolation
+- 🕵️ Incident, case, evidence and timeline management
+- 🎯 MITRE ATT&CK mapping
+- 🔐 JWT authentication and ADMIN / SOC_ANALYST / VIEWER RBAC
+- 📋 Append-oriented audit logging
 
 ## 🧪 Attack Simulation Center
 
-SentinelFlow includes controlled simulations for demonstrating the automation pipeline without attacking real systems.
+Controlled scenarios demonstrate the pipeline without attacking real infrastructure:
 
-| Scenario | Demonstrates |
-|---|---|
-| Brute Force | Alert → correlation → risk → playbook → simulated IP block |
-| Phishing | Email/URL enrichment → incident → simulated quarantine |
-| Malicious IP | Threat intelligence → risk → perimeter response simulation |
-| Malware | Hash analysis → approval → simulated endpoint isolation |
-| Suspicious Login | Authentication anomaly → response workflow |
-| Data Exfiltration | High-risk event → human approval workflow |
-| Impossible Travel | Geographic login anomaly detection |
-| Suspicious PowerShell | Execution-related detection workflow |
-| Credential Stuffing | Repeated authentication attack correlation |
-| Malicious Domain | Domain reputation and response workflow |
+`Brute Force` · `Phishing` · `Malicious IP` · `Malware` · `Suspicious Login` · `Data Exfiltration` · `Impossible Travel` · `Suspicious PowerShell` · `Credential Stuffing` · `Malicious Domain`
 
-### Example
+## 🏗️ Architecture
 
 ```text
-Simulate Brute Force
-        ↓
-Alert Created
-        ↓
-Normalize + Deduplicate
-        ↓
-Correlation
-        ↓
-Threat Intelligence
-        ↓
-Risk Score
-        ↓
-Automation Rule
-        ↓
-Brute Force Playbook
-        ↓
-Simulated Firewall Block
-        ↓
-Incident Timeline
-        ↓
-Notification
-        ↓
-Audit Log
+React SOC Dashboard
+        │ REST / WebSocket
+        ▼
+      FastAPI
+        │
+        ├── Auth / RBAC
+        ├── Alerts / Incidents / Cases
+        ├── Correlation / Risk
+        ├── Threat Intelligence
+        ├── Rules / Playbooks
+        ├── Approvals / Notifications
+        └── Audit
+        │
+        ▼
+   PostgreSQL
 ```
-
----
-
-## 🧱 Architecture
-
-```text
-┌──────────────────────────────────────────────────────────┐
-│                    React SOC Dashboard                   │
-│ Alerts │ Incidents │ Playbooks │ Cases │ Reports │ TI   │
-└──────────────────────────┬───────────────────────────────┘
-                           │ REST API
-┌──────────────────────────▼───────────────────────────────┐
-│                         FastAPI                           │
-│ Auth │ RBAC │ Alerts │ Incidents │ Cases │ Reports       │
-├──────────────────────────────────────────────────────────┤
-│                    SOAR Service Layer                    │
-│ Correlation │ Risk │ Threat Intel │ Rules │ Playbooks   │
-│ Approvals │ Notifications │ Safe Response │ Audit       │
-└──────────────────────────┬───────────────────────────────┘
-                           │ SQLAlchemy / Alembic
-┌──────────────────────────▼───────────────────────────────┐
-│                       PostgreSQL                          │
-│ Alerts │ Incidents │ Indicators │ Assets │ Cases         │
-│ Playbooks │ Executions │ Rules │ Approvals │ Audit Logs  │
-└──────────────────────────────────────────────────────────┘
-```
-
----
 
 ## 🛠️ Tech Stack
 
@@ -181,158 +86,44 @@ Audit Log
 | Frontend | React 18, TypeScript, Vite, Tailwind CSS |
 | UI | Lucide Icons, Recharts |
 | Backend | Python 3.11+, FastAPI, Pydantic |
-| ORM | SQLAlchemy 2.x |
+| ORM / DB | SQLAlchemy 2.x, PostgreSQL |
 | Migrations | Alembic |
-| Database | PostgreSQL |
-| Authentication | JWT + password hashing |
+| Auth | JWT + password hashing |
 | Testing | Pytest |
 | Infrastructure | Docker + Docker Compose |
-| Threat Intelligence | VirusTotal / AbuseIPDB adapters + simulated fallback |
-
----
 
 ## 🚀 Quick Start
-
-### 1. Clone
 
 ```bash
 git clone https://github.com/wwwsahilchand123-maker/SentinelFlow-SOAR.git
 cd SentinelFlow-SOAR
 ```
 
-### 2. Configure environment
-
-```bash
-cp .env.example .env
-```
-
-On Windows PowerShell:
-
-```powershell
-Copy-Item .env.example .env
-```
-
-Fill in the required local configuration. **Never commit `.env` or real API keys.**
-
-### 3. Start with Docker
+Configure your environment from `.env.example`, then:
 
 ```bash
 docker compose up --build
 ```
 
-Services:
+Typical services:
 
 - Frontend: `http://localhost:3000`
-- Backend API: `http://localhost:8000`
+- Backend: `http://localhost:8000`
 - Swagger: `http://localhost:8000/docs`
 - Health: `http://localhost:8000/api/health`
 
-### 4. Stop
+Stop with:
 
 ```bash
 docker compose down
 ```
 
-For a clean database reset during local development:
-
-```bash
-docker compose down -v
-```
-
----
-
-## 🔐 Demo Roles
-
-| Role | Purpose |
-|---|---|
-| `ADMIN` | Full platform administration and configuration |
-| `SOC_ANALYST` | Alert triage, incident response and investigations |
-| `VIEWER` | Read-only security visibility |
-
-For local development, use the credentials documented by the seed configuration rather than embedding credentials in source code.
-
----
-
-## 🧠 Risk Scoring
-
-SentinelFlow uses deterministic scoring rather than random severity values.
-
-The model considers factors such as:
-
-- Alert severity
-- Threat-intelligence reputation
-- Asset criticality
-- Behavioral velocity
-- Previous incident history
-
-Final score:
-
-```text
-0–30    LOW
-31–60   MEDIUM
-61–80   HIGH
-81–100  CRITICAL
-```
-
-The purpose is to make automated security decisions **repeatable and auditable**.
-
----
-
-## 🎯 MITRE ATT&CK Coverage
-
-The project includes mappings for representative techniques including:
-
-- `T1566` — Phishing
-- `T1059` — Command and Scripting Interpreter
-- `T1110` — Brute Force
-- `T1078` — Valid Accounts
-- `T1071` — Application Layer Protocol
-- `T1568` — Dynamic Resolution
-- `T1048` — Exfiltration Over Alternative Protocol
-- `T1486` — Data Encrypted for Impact
-
----
-
 ## 🧪 Testing
-
-Run the backend test suite:
 
 ```bash
 cd backend
 python -m pytest -v
 ```
-
-The most important integration path to verify is:
-
-```text
-Alert
- → Correlation
- → Threat Intelligence
- → Risk Scoring
- → Automation Rule
- → Playbook
- → Approval (when required)
- → Safe Response
- → Incident
- → Notification
- → Timeline
- → Audit Log
-```
-
----
-
-## 🔒 Security Principles
-
-- Secrets belong in environment variables, not source code.
-- `.env` should never be committed.
-- Authentication and authorization are enforced server-side.
-- User-supplied automation rules must never be executed with arbitrary Python `eval()`.
-- Uploaded evidence is treated as untrusted input.
-- Destructive security actions are simulated by default.
-- Audit history is designed to be append-only from the normal application workflow.
-- Live and simulated threat-intelligence results are explicitly distinguished.
-
----
 
 ## 📁 Project Structure
 
@@ -346,15 +137,8 @@ SentinelFlow-SOAR/
 │   │   ├── services/
 │   │   └── main.py
 │   ├── alembic/
-│   ├── tests/
-│   └── requirements.txt
+│   └── tests/
 ├── frontend/
-│   ├── src/
-│   │   ├── components/
-│   │   ├── pages/
-│   │   ├── services/
-│   │   └── types/
-│   └── package.json
 ├── docker-compose.yml
 ├── ARCHITECTURE.md
 ├── API.md
@@ -362,49 +146,35 @@ SentinelFlow-SOAR/
 └── .env.example
 ```
 
----
+## 🔐 Security Principles
 
-## 📸 Screenshots
-
-Add screenshots/GIFs here after capturing the final running application. Recommended showcase order:
-
-1. SOC Dashboard
-2. Alert Details
-3. Incident Timeline
-4. Playbook Execution
-5. Threat Intelligence
-6. Attack Simulation Center
-7. Approval Workflow
-8. Audit Logs
-
----
+Secrets stay in environment variables, authentication and authorization are enforced server-side, uploaded evidence is treated as untrusted input, and destructive response actions are simulated by default.
 
 ## 🗺️ Roadmap
 
 - [x] SOC dashboard
-- [x] Alert and incident management
+- [x] Alert / incident management
 - [x] Threat-intelligence abstraction
-- [x] Deterministic risk scoring
-- [x] Automation rules
-- [x] SOAR playbooks
+- [x] Risk scoring
+- [x] Automation rules and playbooks
 - [x] Safe response simulation
 - [x] Human approval workflow
 - [x] MITRE ATT&CK mapping
 - [x] Audit logging
 - [x] Docker deployment
-- [ ] Production-grade external connector ecosystem
-- [ ] Background job/queue execution for long-running playbooks
-- [ ] Advanced detection correlation
-- [ ] Additional SOC integrations
-
----
+- [ ] More production connectors
+- [ ] Advanced correlation and background execution
 
 ## ⚠️ Disclaimer
 
-SentinelFlow is a cybersecurity engineering and automation demonstration project. The included attack scenarios are controlled simulations intended for local testing. Do not use the platform or its integrations to access, disrupt, or modify systems without authorization.
+SentinelFlow is a cybersecurity engineering and automation demonstration project. The included attack scenarios are controlled simulations. Use the platform and integrations only on systems and networks you are authorized to test or monitor.
 
 ---
 
-## 📄 License
+<div align="center">
 
-MIT License.
+### 🚨 Detect. Orchestrate. Automate. Respond.
+
+**Built by Sahil Chand**
+
+</div>
