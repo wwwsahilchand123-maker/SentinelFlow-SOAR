@@ -6,9 +6,9 @@ services:
     container_name: sentinelflow-postgres
     restart: unless-stopped
     environment:
-      - POSTGRES_USER=soar_user
-      - POSTGRES_PASSWORD=soar_secure_password_123
-      - POSTGRES_DB=soar_db
+      - POSTGRES_USER=${POSTGRES_USER:-soar_user}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+      - POSTGRES_DB=${POSTGRES_DB:-soar_db}
     ports:
       - "5432:5432"
     volumes:
@@ -28,8 +28,8 @@ services:
     environment:
       - APP_NAME=SentinelFlow SOAR Platform
       - ENVIRONMENT=production
-      - DATABASE_URL=postgresql://soar_user:soar_secure_password_123@postgres:5432/soar_db
-      - JWT_SECRET=sentinelflow-enterprise-jwt-secret-key-32-chars-minimum
+      - DATABASE_URL=${DATABASE_URL:?Set DATABASE_URL in .env}
+      - JWT_SECRET=${JWT_SECRET:?Set JWT_SECRET in .env}
       - JWT_ALGORITHM=HS256
       - JWT_EXPIRATION_MINUTES=1440
       - SIMULATION_MODE=true
