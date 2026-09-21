@@ -23,3 +23,9 @@ SentinelFlow is a defensive security engineering demonstration for controlled an
 ## Reporting vulnerabilities
 
 Do not publish sensitive exploit details or private data in a public issue. Report suspected vulnerabilities through an appropriate private channel and include the affected component, impact, safe reproduction context, and remediation guidance.
+
+## Container deployment
+
+- Docker Compose requires `POSTGRES_PASSWORD`, `DATABASE_URL`, and `JWT_SECRET` to be supplied through the deployment environment; do not put real values in `docker-compose.yml`.
+- Keep `SIMULATION_MODE=true` for development and test environments unless live integrations have been explicitly reviewed.
+- Restrict published database ports in deployments where PostgreSQL does not need to be reachable from the host network.
