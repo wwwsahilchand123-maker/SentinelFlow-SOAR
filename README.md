@@ -170,3 +170,18 @@ SentinelFlow is a cybersecurity engineering demonstration. Attack scenarios are 
 **Built by Sahil Chand**
 
 </div>
+
+---
+
+## 🛡️ Response Safety
+
+SentinelFlow is designed around controlled, auditable response rather than unrestricted automation.
+
+- Validate incoming events before playbook execution.
+- Use least-privilege credentials for integrations.
+- Require human approval for high-impact actions.
+- Prefer idempotent response steps where possible.
+- Record security-sensitive actions and their outcomes.
+- Fail safely when required authorization or validation is unavailable.
+
+See [Operations Safety](docs/OPERATIONS_SAFETY.md) and [Product Requirements](docs/PRD.md) for the detailed design.
